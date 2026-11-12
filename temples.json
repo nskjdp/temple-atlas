@@ -6,7 +6,7 @@
     "country": "Cambodia",
     "region": "Southeast Asia",
     "latitude": 13.4125,
-    "longitude": 103.8670,
+    "longitude": 103.867,
     "summary": "Originally built in the 12th century as a grand Hindu temple dedicated to Lord Vishnu, Angkor Wat is the largest religious monument in the world.",
     "history": "Angkor Wat was commissioned in the early 12th century by King Suryavarman II of the Khmer Empire as his state temple and eventual funerary shrine. Dedicated to Lord Vishnu, the temple broke with previous Shaivite royal traditions. Towards the end of the 12th century, it gradually transitioned into a Buddhist sanctuary while preserving its original Hindu bas-reliefs and sacred layout.",
     "architecture": "Angkor Wat represents the zenith of classical Khmer architecture. It features five iconic lotus-bud towers representing the peaks of Mount Meru, surrounded by three concentric rectangular galleries and a vast 190-metre-wide moat symbolizing the cosmic ocean. The walls feature nearly 2,000 exquisitely carved devatas (celestial deities) and extensive bas-reliefs depicting scenes from the Hindu epics Mahabharata and Ramayana, most famously the Churning of the Ocean of Milk (Samudra Manthan).",
@@ -17,7 +17,7 @@
       "Khmer New Year (Choul Chnam Thmey)",
       "Meak Bochea"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Angkor_Wat_temple.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/41/Angkor_Wat.jpg",
     "imageCredit": "Photo by Bjørn Christian Tørrissen, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -26,7 +26,7 @@
     "city": "Yogyakarta",
     "country": "Indonesia",
     "region": "Southeast Asia",
-    "latitude": -7.7520,
+    "latitude": -7.752,
     "longitude": 110.4915,
     "summary": "Built in the 9th century, Prambanan is the largest Hindu temple compound in Indonesia, celebrated for its soaring pointed spires dedicated to the Trimurti.",
     "history": "Constructed around 850 CE by Rakai Pikatan of the Sanjaya Dynasty during the Mataram Kingdom, Prambanan was built to celebrate the return of Hindu dynastic power in Java. The complex was expanded by subsequent monarchs before being abandoned in the 10th century when the royal court shifted to East Java. It was rediscovered in the early 19th century and underwent major restoration throughout the 20th century.",
@@ -38,7 +38,7 @@
       "Tawur Agung Kesanga (Sacred eve of Nyepi)",
       "Full Moon Ramayana Ballet Festivals"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Candi_Prambanan_Yogyakarta.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Candi_Prambanan_Yogyakarta.jpg",
     "imageCredit": "Photo by Gunawan Kartapranata, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -59,8 +59,8 @@
       "Odalan Temple Anniversaries",
       "Galungan & Kuningan"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Pura_Besakih_Bali.jpg?width=1000",
-    "imageCredit": "Photo by Sean Hamlin, CC BY 2.0 via Wikimedia Commons"
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/70/Besakih_Bali_Indonesia_Pura-Besakih-01.jpg",
+    "imageCredit": "Photo by CEphoto, Uwe Aranas, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
     "id": "batu-caves",
@@ -69,7 +69,7 @@
     "country": "Malaysia",
     "region": "Southeast Asia",
     "latitude": 3.2379,
-    "longitude": 101.6840,
+    "longitude": 101.684,
     "summary": "A 400-million-year-old limestone hill featuring cave temples, guarded by a colossal 140-foot golden statue of Lord Murugan.",
     "history": "While indigenous Temuan people historically used the caves as shelters, the site was dedicated to Lord Murugan in 1890 by K. Thamboosamy Pillai, a prominent leader of the Tamil community in Malaya. The famous 272 concrete steps were built in 1920, and the world's third-tallest statue of Lord Murugan was consecrated at the base in 2006.",
     "architecture": "The temple is integrated into natural karst limestone caverns with vaulted ceilings reaching 100 metres high. The ascent involves 272 steps painted in vivid rainbow hues. At the entrance stands the 42.7-metre (140-foot) Murugan statue, constructed from 250 tonnes of steel bars, 1,550 cubic metres of concrete, and coated with 300 litres of gold paint imported from Thailand.",
@@ -80,8 +80,8 @@
       "Panguni Uthiram",
       "Deepavali"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Batu_Caves_Lord_Murugan_statue_and_entrance_stairs.jpg?width=1000",
-    "imageCredit": "Photo by Uwe Aranas, CC BY-SA 4.0 via Wikimedia Commons"
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Batu_caves.jpg",
+    "imageCredit": "Photo by Peter Ellis, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
     "id": "sri-mariamman-singapore",
@@ -101,8 +101,8 @@
       "Navaratri",
       "Brahmotsavam"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Mariamman_Temple_Singapore_Gopuram.jpg?width=1000",
-    "imageCredit": "Photo by Terence Ong, CC BY-SA 3.0 via Wikimedia Commons"
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Gopuram_monumental_ornate_tower_at_the_entrance_of_Sri_Mariamman_Temple_with_sculptures_of_Hindu_deities_Chinatown_Singapore.jpg",
+    "imageCredit": "Photo by chensiyuan, CC BY-SA 4.0 via Wikimedia Commons"
   },
   {
     "id": "pashupatinath",
@@ -122,7 +122,7 @@
       "Haritalika Teej",
       "Bala Chaturdashi"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Pashupatinath_Temple_Kathmandu.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Pashupatinath_Temple_Kathmandu.jpg",
     "imageCredit": "Photo by Bijaya2043, CC BY-SA 4.0 via Wikimedia Commons"
   },
   {
@@ -143,7 +143,7 @@
       "Krishna Janmashtami (Grand national procession)",
       "Saraswati Puja"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Dhakeshwari_Temple_Dhaka.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/Dhak_at_Dhakeshwari_Temple.jpg",
     "imageCredit": "Photo by R. R. Minar, CC BY-SA 4.0 via Wikimedia Commons"
   },
   {
@@ -164,7 +164,7 @@
       "Ther Thiruvizha (Grand Chariot Festival)",
       "Navaratri"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Koneswaram_temple_Trincomalee.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Koneswaram_Temple_-_Trincomalee.jpg",
     "imageCredit": "Photo by A.Savin, FAL / Free Art License via Wikimedia Commons"
   },
   {
@@ -185,7 +185,7 @@
       "Navaratri",
       "Avani Moola Festival"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Madurai_Meenakshi_Amman_temple_Gopuram.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Meenakshi_Amman_Temple,_Madurai.jpg",
     "imageCredit": "Photo by Bernard Gagnon, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -206,7 +206,7 @@
       "Brahmotsavam",
       "Natyanjali Classical Dance Festival"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Brihadisvara_Temple_at_Thanjavur.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Brihadisvara_Temple,_Thanjavur.jpg",
     "imageCredit": "Photo by Aravind Sivaraj, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -227,7 +227,7 @@
       "Vaikunta Ekadasi",
       "Rathasapthami"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Tirumala_temple.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2a/A_View_of_Tirumala_Venkateswara_Temple.JPG",
     "imageCredit": "Photo by Vimalkalyan, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -249,7 +249,7 @@
       "Rangbhari Ekadashi",
       "Shravan Month Festivities"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Kashi_Vishwanath_Temple_Varanasi.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Shri_Kashi_Vishwanath_Temple_2.jpg",
     "imageCredit": "Photo by AKS.9955, CC BY-SA 4.0 via Wikimedia Commons"
   },
   {
@@ -271,7 +271,7 @@
       "Badri-Kedar Utsav",
       "Kapat Closing Ceremony (Bhai Dooj)"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Kedarnath_Temple.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/30/Kedarnath_Temple.jpg",
     "imageCredit": "Photo by Shaq774, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -293,8 +293,8 @@
       "Holi Festival of Colors",
       "Pramukh Swami Maharaj Jayanti"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/BAPS_Akshardham_Robbinsville.jpg?width=1000",
-    "imageCredit": "Photo by BAPS Swaminarayan Sanstha / Wikimedia Commons, CC BY-SA 4.0"
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ef/BAPS_Robbinsville_Mandir_-_Exterior.jpg",
+    "imageCredit": "Photo by BAPS Swaminarayan Sanstha, CC BY-SA 4.0 via Wikimedia Commons"
   },
   {
     "id": "sv-temple-pittsburgh",
@@ -315,7 +315,7 @@
       "Diwali",
       "Ugadi"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Venkateswara_Temple,_Pittsburgh.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e1/Sri_Venkateswara_Temple_-_Penn_Hills_01.jpg",
     "imageCredit": "Photo by Derek Jensen (Tysto), Public Domain via Wikimedia Commons"
   },
   {
@@ -337,7 +337,7 @@
       "Ram Navami",
       "Maha Shivaratri"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/BAPS_Shri_Swaminarayan_Mandir_London.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/50/BAPS_Shri_Swaminarayan_Mandir_London.jpg",
     "imageCredit": "Photo by Diliff, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -359,7 +359,7 @@
       "Maha Shivaratri",
       "Panguni Uthiram"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Sri-Kamadchi-Ampal-Tempel-Hamm.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Hamm_Hindutempel_Sri-Kamadchi-Ampal_1.jpg",
     "imageCredit": "Photo by Frank Vincentz, CC BY-SA 3.0 via Wikimedia Commons"
   },
   {
@@ -381,8 +381,8 @@
       "Maha Shivaratri",
       "Deepavali"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Sri_Siva_Subramaniya_temple.jpg?width=1000",
-    "imageCredit": "Photo by Makalu, CC0 / Public Domain via Wikimedia Commons"
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/Nadi_Sri_Siva_Subramaniya_Temple.jpg",
+    "imageCredit": "Photo by Makalu, Public Domain / CC0 via Wikimedia Commons"
   },
   {
     "id": "sydney-murugan-australia",
@@ -403,7 +403,7 @@
       "Panguni Uthiram",
       "Navaratri"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Sydney_Murugan_Temple.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/38/Sydney_murugan_koyil.jpg",
     "imageCredit": "Photo by Sardaka, CC BY-SA 4.0 via Wikimedia Commons"
   },
   {
@@ -412,8 +412,8 @@
     "city": "Savanne District",
     "country": "Mauritius",
     "region": "Africa",
-    "latitude": -20.4180,
-    "longitude": 57.4930,
+    "latitude": -20.418,
+    "longitude": 57.493,
     "summary": "Nestled in a lush volcanic crater lake in the highlands of Mauritius, Ganga Talao is the most sacred Hindu pilgrimage destination in Africa.",
     "history": "In 1897, a Hindu priest named Jhummon Giri Gosagne had a prophetic dream that the crater lake's water connected spiritually with the holy River Ganga. In 1898, the first group of pilgrims walked barefoot to the lake for Maha Shivaratri. In 1972, holy water brought directly from the Ganges in India was ritually mingled with the lake.",
     "architecture": "The lakeside sanctuary comprises several shrines dedicated to Lord Shiva, Hanuman, Lakshmi, and Durga. Standing beside the lake is the monumental 33-metre (108 ft) bronze-hued statue of Lord Shiva (Mangal Mahadev) and a matching 33-metre statue of Goddess Durga (Durga Maa), among the tallest religious statues in Africa.",
@@ -425,8 +425,7 @@
       "Ganesh Chaturthi",
       "Durga Puja"
     ],
-    "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Bassin,_Mauritius_-_Lord_Shiva_statue.jpg?width=1000",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/70/Grand_Bassin,_Mauritius.jpg",
     "imageCredit": "Photo by Simisa, CC BY-SA 3.0 via Wikimedia Commons"
   }
 ]
-

@@ -8,17 +8,22 @@ A complete, interactive, and responsive educational web application showcasing 2
 
 **Temple Atlas** allows students, teachers, and visitors to explore sacred Hindu architecture across Asia, Europe, North America, Oceania, and Africa. From ancient UNESCO World Heritage sites like Angkor Wat in Cambodia and Prambanan in Indonesia to medieval marvels like Brihadisvara in India and modern diaspora masterpieces like BAPS Akshardham in New Jersey, this project maps their geographic coordinates, architectural styles, history, and cultural significance.
 
-### Key Highlights
+### Key Highlights & Modern Enhancements
 - **100% Static & Lightweight:** Pure HTML5, CSS3, and modern Vanilla JavaScript (ES6+).
-- **Interactive Global Map:** Powered by [Leaflet.js](https://leafletjs.com/) with [OpenStreetMap](https://www.openstreetmap.org/) tiles and full attribution.
+- **Interactive Global Map with Prominent India Focus:** Powered by [Leaflet.js](https://leafletjs.com/) with OpenStreetMap tiles. When the website loads, it prominently centers and frames the map of India at the heart of the homepage, while allowing users to smoothly explore the entire globe.
 - **Decoupled Temple Data:** All 20 temples are stored in a standalone [`temples.json`](temples.json) file. New temples can be added at any time without modifying any HTML or JavaScript.
-- **Desktop Hover & Mobile Touch:** Hovering over a marker opens a concise pop-up with a smart delay timer so users can comfortably move the cursor onto the "More Details" button. On mobile touchscreens, a simple tap opens the pop-up.
+- **Multi-Device Navigation (Desktop & Mobile):**
+  - **Horizontal Region Chips Bar:** Sleek category carousel allowing one-click filtering by world regions (South Asia, Southeast Asia, North America, Europe, Oceania, Africa).
+  - **Smart Desktop Hover Preview:** Hovering over a marker opens a concise pop-up with a 400ms delay timer so users can comfortably move the cursor onto the "Explore Details" button.
+  - **Mobile Touch Optimization:** Native tap-to-inspect behavior, mobile bottom-sheet with drag handle, and a floating action bar (FAB) for quick access to the Directory and India View.
+  - **Virtual Tour Mode:** Previous (`←`) and Next (`→`) temple navigation buttons inside the details panel, plus keyboard shortcuts (`ArrowLeft` / `ArrowRight`).
+  - **Deep Linking & Sharing:** Share link button copies direct URL hash (e.g. `#angkor-wat`) to easily bookmark or share any specific temple.
+  - **Instant Search:** Search bar with keyboard shortcut (`/`) and instant clear button.
 - **Responsive Details Panel:**
-  - **Desktop:** The details panel slides smoothly from the right side of the screen, keeping the map visible beside it.
+  - **Desktop:** The details panel slides smoothly from the right side, keeping the map visible and dynamically offsetting the center coordinate.
   - **Mobile:** The details panel slides up from the bottom as an accessible full-width sheet with scrollable content.
-- **Rich Educational Content:** Every temple features historical narratives, architectural analysis, geographical access notes, religious significance, major festival lists, and freely licensed Wikimedia Commons photographs with author credits.
-- **Search & Filter:** Search in real-time by temple name, city, or country, or filter by global region.
-- **Dignified Aesthetic:** Warm, respectful color palette (saffron, deep maroon, cream parchment, and temple gold) with elegant typography.
+- **Rich Educational Content:** Every temple features historical narratives, architectural analysis, geographical access notes, religious significance, major festival lists, quick facts grid (coordinates, region, heritage), and freely licensed Wikimedia Commons photographs with author credits.
+- **Modern, Professional Theme:** Imperial maroon, radiant saffron, temple gold, and champagne parchment with glassmorphism (`backdrop-filter: blur`), glowing active marker pulses, and micro-interactions.
 
 ---
 
@@ -185,23 +190,23 @@ To add a 21st temple, simply open `temples.json`, add a comma after the last ent
 When presenting this project in class or to your teacher, you can explain the core engineering concepts used to build it:
 
 1. **Separation of Concerns (Decoupled Architecture):**
-   - **HTML (`index.html`)** provides the semantic backbone and accessible document structure.
-   - **CSS (`style.css`)** controls visual hierarchy, typography, responsive breakpoints, and smooth transitions.
-   - **JavaScript (`script.js`)** handles state, coordinates, asynchronous data loading, and interactive events.
-   - **Data (`temples.json`)** is completely separated from code. Explain that real-world software engineering avoids "hardcoding" data into user interfaces.
+   - **HTML (`index.html`)** provides semantic structure and accessible ARIA attributes.
+   - **CSS (`style.css`)** defines custom properties, glassmorphism, responsive media queries, and hardware-accelerated animations.
+   - **JavaScript (`script.js`)** handles state, asynchronous data loading, geographic projection, and interactive events.
+   - **Data (`temples.json`)** is completely separated from code, mimicking real-world software engineering principles.
 
 2. **Asynchronous JavaScript (`async/await` and `fetch`):**
-   - When the page loads, `fetch('temples.json')` requests the data file asynchronously without freezing the browser.
-   - If an error occurs (such as an offline connection or restricted protocol), a friendly banner is shown to guide the user rather than failing silently.
+   - When the page loads, `fetch('temples.json')` requests the data file asynchronously without freezing the browser UI.
+   - Graceful fallbacks and user-friendly error banners notify the user if protocol restrictions occur.
 
 3. **Geographic Mapping with Leaflet.js & OpenStreetMap:**
    - Every temple is pinned to an exact geographic coordinate using its **latitude** (North/South) and **longitude** (East/West).
-   - Custom SVG marker pins were created with HTML/CSS (`L.divIcon`) using traditional colors (saffron and maroon) rather than default generic markers.
+   - Custom SVG marker pins were created with HTML/CSS (`L.divIcon`) using imperial maroon and radiant saffron with active pulse animations.
 
 4. **Solving the Desktop Hover vs. Click Problem:**
-   - On desktop, hovering over a marker opens a pop-up. However, if the pop-up closed the instant the mouse moved off the pin, the user could never reach the "More Details" button!
-   - To fix this, `script.js` uses a **graceful delay timer** (`380ms` timeout). When the user moves their mouse into the pop-up, a `mouseenter` event clears the timer, keeping the pop-up open. When the mouse leaves the pop-up, it starts the countdown again.
-   - On mobile touchscreens (where "hover" does not exist), the script detects touch devices and relies on touch/tap events.
+   - On desktop, hovering over a marker opens a pop-up. However, if the pop-up closed the instant the mouse moved off the pin, the user could never reach the "Explore Details" button.
+   - To fix this, `script.js` uses a **graceful delay timer** (`400ms` timeout). When the user moves their mouse into the pop-up, a `mouseenter` event clears the timer, keeping the pop-up open. When the mouse leaves the pop-up, it starts the countdown again.
+   - On mobile touchscreens, the script detects touch devices and relies on touch/tap events.
 
 5. **Responsive Mobile-First Sliding Panels:**
    - On desktop screens (`> 768px`), the details panel slides in from the right (`transform: translateX(100%)` to `0`), allowing the map to remain visible and interactive beside it.
@@ -222,4 +227,3 @@ When presenting this project in class or to your teacher, you can explain the co
 ---
 
 *Temple Atlas &bull; Created for Educational Presentation & School Heritage Projects*
-

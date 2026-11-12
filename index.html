@@ -2,29 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Temple Atlas - An interactive world map of prominent Hindu temples across the globe, showcasing sacred architecture, history, and cultural significance.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Temple Atlas - An interactive, modern world map exploring sacred Hindu temples across the globe, showcasing architectural majesty, history, and cultural heritage.">
+  <meta name="theme-color" content="#30060d">
   <title>Temple Atlas — Sacred Hindu Temples Across the Globe</title>
 
-  <!-- Google Fonts for Dignified Serif Headings & Clean Modern Body Text -->
+  <!-- Google Fonts: Dignified Serif for Titles & Clean Modern Sans for UI -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Leaflet.js CSS (loaded from CDN with integrity check) -->
+  <!-- Leaflet.js CSS from CDN -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
         crossorigin="">
 
-  <!-- Custom Site Stylesheet -->
+  <!-- Upgraded Modern Stylesheet -->
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.svg" sizes="192x192" type="image/svg+xml">
 </head>
 <body>
-  <!-- Site Header -->
+  <!-- Modern App Header -->
   <header class="site-header" role="banner">
     <div class="header-inner">
+      <!-- Brand & Title -->
       <div class="brand">
-        <!-- Stylized Sacred Kalasha / Temple Shikhara Icon -->
         <div class="brand-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2L15 8H9L12 2Z" fill="currentColor" fill-opacity="0.3"></path>
@@ -39,18 +42,20 @@
         </div>
       </div>
 
-      <!-- Controls Toolbar -->
+      <!-- Header Controls Toolbar -->
       <nav class="header-controls" aria-label="Atlas controls">
-        <!-- Search Input -->
+        <!-- Modern Live Search Bar -->
         <div class="search-box">
-          <svg class="control-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="search" id="search-input" placeholder="Search temple, city, country..." aria-label="Search temples">
+          <input type="search" id="search-input" placeholder="Search temple, city, country..." aria-label="Search temples" autocomplete="off" spellcheck="false">
+          <button type="button" id="btn-clear-search" class="btn-clear-search" aria-label="Clear search query" style="display:none;">&times;</button>
+          <kbd class="kbd-shortcut" title="Press '/' to search" aria-hidden="true">/</kbd>
         </div>
 
-        <!-- Region Filter Dropdown -->
+        <!-- Hidden/Accessible Native Region Select for Sync -->
         <div class="select-box">
           <label for="region-filter" class="sr-only">Filter by Region</label>
           <select id="region-filter" aria-label="Filter temples by region">
@@ -64,19 +69,19 @@
           </select>
         </div>
 
-        <!-- Reset Map View Button -->
-        <button type="button" id="btn-reset-view" class="btn btn-secondary" title="Reset map to world view">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Center on India View Reset Button -->
+        <button type="button" id="btn-reset-view" class="btn btn-secondary" title="Center map on India">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M2 12h20"></path>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
           </svg>
-          <span>World View</span>
+          <span>India View</span>
         </button>
 
-        <!-- Temple List Drawer Toggle -->
-        <button type="button" id="btn-toggle-list" class="btn btn-primary" title="Browse all temples list" aria-expanded="false" aria-controls="list-drawer">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Directory Drawer Toggle Button -->
+        <button type="button" id="btn-toggle-list" class="btn btn-primary" title="Browse all temples directory" aria-expanded="false" aria-controls="list-drawer">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="8" y1="6" x2="21" y2="6"></line>
             <line x1="8" y1="12" x2="21" y2="12"></line>
             <line x1="8" y1="18" x2="21" y2="18"></line>
@@ -87,6 +92,40 @@
           <span>Directory</span>
         </button>
       </nav>
+    </div>
+
+    <!-- Modern Horizontal Region Chips Bar (Seamless Multi-Device Navigation) -->
+    <div class="region-chips-bar" role="tablist" aria-label="Region filters">
+      <div class="chips-scroll-container">
+        <button type="button" class="chip active" data-region="all" role="tab" aria-selected="true">
+          <span class="chip-icon">🌍</span>
+          <span class="chip-label">All Regions</span>
+        </button>
+        <button type="button" class="chip" data-region="South Asia" role="tab" aria-selected="false">
+          <span class="chip-icon">🛕</span>
+          <span class="chip-label">South Asia</span>
+        </button>
+        <button type="button" class="chip" data-region="Southeast Asia" role="tab" aria-selected="false">
+          <span class="chip-icon">🌴</span>
+          <span class="chip-label">Southeast Asia</span>
+        </button>
+        <button type="button" class="chip" data-region="North America" role="tab" aria-selected="false">
+          <span class="chip-icon">🗽</span>
+          <span class="chip-label">North America</span>
+        </button>
+        <button type="button" class="chip" data-region="Europe" role="tab" aria-selected="false">
+          <span class="chip-icon">🏰</span>
+          <span class="chip-label">Europe</span>
+        </button>
+        <button type="button" class="chip" data-region="Oceania" role="tab" aria-selected="false">
+          <span class="chip-icon">🌊</span>
+          <span class="chip-label">Oceania</span>
+        </button>
+        <button type="button" class="chip" data-region="Africa" role="tab" aria-selected="false">
+          <span class="chip-icon">🏔️</span>
+          <span class="chip-label">Africa &amp; Indian Ocean</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -101,10 +140,10 @@
       </div>
     </div>
 
-    <!-- Active Filter / Temple Counter Floating Badge -->
-    <div class="floating-status" id="floating-status" aria-live="polite">
-      <span class="status-dot"></span>
-      <span id="temple-counter-text">Loading temples...</span>
+    <!-- Map Quick Guide Hint for Desktop -->
+    <div class="floating-guide desktop-only" id="floating-guide">
+      <span class="guide-icon">💡</span>
+      <span>Hover pin for quick look &bull; Click for full architectural history</span>
     </div>
 
     <!-- Backdrop Overlay for mobile sheets and drawers -->
@@ -112,18 +151,35 @@
 
     <!-- Details Panel (Slide from Right on Desktop, Slide from Bottom on Mobile) -->
     <aside id="details-panel" class="details-panel" aria-labelledby="detail-temple-name" aria-hidden="true">
-      <!-- Mobile Drag Handle -->
-      <div class="sheet-handle" aria-hidden="true"></div>
+      <!-- Mobile Drag / Grip Handle -->
+      <div class="sheet-handle" aria-hidden="true" title="Drag to resize or dismiss"></div>
 
-      <!-- Details Header with close button -->
+      <!-- Modern Sticky Details Header with Nav Buttons -->
       <div class="details-header">
-        <div class="details-meta-pill" id="detail-region-tag">Region</div>
-        <button type="button" id="btn-close-details" class="btn-close" aria-label="Close temple details">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
+        <div class="details-header-left">
+          <div class="details-meta-pill" id="detail-region-tag">Region</div>
+          <span class="details-index-pill" id="details-index-pill">Temple 1 of 20</span>
+        </div>
+
+        <!-- Virtual Tour Previous / Next Controls -->
+        <div class="details-nav-controls">
+          <button type="button" id="btn-prev-temple" class="btn-nav-icon" title="Previous temple (ArrowLeft)" aria-label="Previous temple">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button type="button" id="btn-next-temple" class="btn-nav-icon" title="Next temple (ArrowRight)" aria-label="Next temple">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+          <button type="button" id="btn-close-details" class="btn-close" aria-label="Close temple details (Escape)">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- Details Content (Scrollable Container) -->
@@ -132,7 +188,7 @@
         <div class="temple-heading-group">
           <h2 id="detail-temple-name" class="detail-title">Temple Name</h2>
           <div class="detail-location-badge">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
@@ -143,7 +199,8 @@
         <!-- Temple Image & Attribution -->
         <figure class="detail-image-card">
           <div class="image-wrapper">
-            <img id="detail-image" src="" alt="Photograph of temple" loading="lazy">
+            <div class="image-skeleton" aria-hidden="true"></div>
+            <img id="detail-image" src="" alt="Photograph of temple" loading="eager" referrerpolicy="no-referrer">
             <div id="image-fallback" class="image-fallback" style="display:none;" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
                 <path d="M12 2L15 8H9L12 2Z"></path>
@@ -152,20 +209,65 @@
               </svg>
               <p>Temple Photograph</p>
             </div>
+            <div class="image-overlay-badge" id="image-overlay-badge">Wikimedia Commons</div>
+            <a id="link-full-image" href="#" target="_blank" rel="noopener noreferrer" class="image-expand-btn" title="Open full high-resolution photograph in a new tab">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+              <span>Full View</span>
+            </a>
           </div>
           <figcaption id="detail-image-credit" class="image-credit">Image credit</figcaption>
         </figure>
 
+        <!-- Quick Facts At A Glance -->
+        <div class="quick-facts-grid" aria-label="Key facts at a glance">
+          <div class="fact-card">
+            <div class="fact-icon">📍</div>
+            <div class="fact-info">
+              <span class="fact-label">Coordinates</span>
+              <span class="fact-value" id="fact-coordinates">--</span>
+            </div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-icon">🌍</div>
+            <div class="fact-info">
+              <span class="fact-label">Region</span>
+              <span class="fact-value" id="fact-region">--</span>
+            </div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-icon">🛕</div>
+            <div class="fact-info">
+              <span class="fact-label">Heritage</span>
+              <span class="fact-value" id="fact-status">World Sacred Site</span>
+            </div>
+          </div>
+          <div class="fact-card">
+            <div class="fact-icon">✨</div>
+            <div class="fact-info">
+              <span class="fact-label">Key Highlight</span>
+              <span class="fact-value" id="fact-highlight">Prominent Monument</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Summary -->
         <section class="detail-section highlight-box">
-          <h3 class="section-heading">Overview</h3>
+          <h3 class="section-heading">
+            <span class="heading-emoji">📜</span>
+            <span>Overview</span>
+          </h3>
           <p id="detail-summary" class="section-body"></p>
         </section>
 
         <!-- History -->
         <section class="detail-section">
           <h3 class="section-heading">
-            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
@@ -177,7 +279,7 @@
         <!-- Architecture -->
         <section class="detail-section">
           <h3 class="section-heading">
-            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="3" y1="9" x2="21" y2="9"></line>
               <line x1="9" y1="21" x2="9" y2="9"></line>
@@ -190,7 +292,7 @@
         <!-- Location & Access -->
         <section class="detail-section">
           <h3 class="section-heading">
-            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
               <line x1="8" y1="2" x2="8" y2="18"></line>
               <line x1="16" y1="6" x2="16" y2="22"></line>
@@ -203,7 +305,7 @@
         <!-- Significance -->
         <section class="detail-section">
           <h3 class="section-heading">
-            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
             </svg>
             <span>Religious &amp; Cultural Significance</span>
@@ -214,7 +316,7 @@
         <!-- Festivals -->
         <section class="detail-section">
           <h3 class="section-heading">
-            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
               <line x1="4" y1="22" x2="4" y2="15"></line>
             </svg>
@@ -225,15 +327,37 @@
 
         <!-- Panel Footer Actions -->
         <div class="details-footer-actions">
-          <button type="button" id="btn-zoom-to-active" class="btn btn-secondary full-width">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <button type="button" id="btn-zoom-to-active" class="btn btn-primary full-width">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               <line x1="11" y1="8" x2="11" y2="14"></line>
               <line x1="8" y1="11" x2="14" y2="11"></line>
             </svg>
-            <span>Zoom in on Map</span>
+            <span>Zoom In On Map</span>
           </button>
+
+          <div class="secondary-actions-row">
+            <button type="button" id="btn-share-temple" class="btn btn-outline" title="Copy shareable link and coordinates">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+              </svg>
+              <span>Share Link</span>
+            </button>
+
+            <a id="link-osm-external" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline" title="Open this location in OpenStreetMap">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              <span>OpenStreetMap</span>
+            </a>
+          </div>
         </div>
       </div>
     </aside>
@@ -241,7 +365,9 @@
     <!-- Temple Directory Drawer (Quick browse list) -->
     <aside id="list-drawer" class="list-drawer" aria-labelledby="list-drawer-title" aria-hidden="true">
       <div class="drawer-header">
-        <h2 id="list-drawer-title" class="drawer-title">All Temples Directory</h2>
+        <div class="drawer-title-group">
+          <h2 id="list-drawer-title" class="drawer-title">Temple Directory</h2>
+        </div>
         <button type="button" id="btn-close-drawer" class="btn-close" aria-label="Close directory drawer">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -249,37 +375,56 @@
           </svg>
         </button>
       </div>
-      <p class="drawer-sub">Select any temple below to pan directly to its coordinates on the world map.</p>
+
+      <!-- Quick Drawer Filter Input -->
+      <div class="drawer-search-wrap">
+        <svg class="control-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" id="drawer-search-input" placeholder="Filter directory by keyword..." aria-label="Filter directory list">
+      </div>
+
       <div id="temple-list-container" class="temple-list-items">
         <!-- Dynamically populated temple cards -->
       </div>
     </aside>
 
-    <!-- Error / Notification Toast -->
+    <!-- Global Floating Action Button for Mobile Quick Search / List -->
+    <div class="mobile-fab-bar" aria-label="Quick mobile navigation">
+      <button type="button" id="mobile-btn-directory" class="mobile-fab-btn" title="Open temple directory">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <circle cx="3" cy="6" r="1.5" fill="currentColor"></circle>
+          <circle cx="3" cy="12" r="1.5" fill="currentColor"></circle>
+          <circle cx="3" cy="18" r="1.5" fill="currentColor"></circle>
+        </svg>
+        <span>Directory</span>
+      </button>
+
+      <button type="button" id="mobile-btn-reset" class="mobile-fab-btn" title="Center map on India">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M2 12h20"></path>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span>India</span>
+      </button>
+    </div>
+
+    <!-- Friendly Toast / Notification Banner -->
     <div id="error-toast" class="error-toast" role="alert" aria-live="assertive" style="display:none;">
       <div class="toast-content">
-        <div class="toast-icon" aria-hidden="true">⚠️</div>
+        <div class="toast-icon" id="toast-icon" aria-hidden="true">⚠️</div>
         <div class="toast-message" id="error-toast-text">
-          Could not load temple data. Please ensure you are serving this project through a local web server (such as <code>python3 -m http.server</code>).
+          Could not load temple data.
         </div>
       </div>
-      <button type="button" id="btn-dismiss-toast" class="btn-dismiss" aria-label="Dismiss error notification">&times;</button>
+      <button type="button" id="btn-dismiss-toast" class="btn-dismiss" aria-label="Dismiss notification">&times;</button>
     </div>
   </main>
-
-  <!-- Site Footer with Proper Credits and Attributions -->
-  <footer class="site-footer" role="contentinfo">
-    <div class="footer-inner">
-      <p class="footer-attribution">
-        <strong>Temple Atlas</strong> &bull; School Project Educational Resource
-      </p>
-      <p class="footer-credits">
-        Map tiles &amp; geographic data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors &bull;
-        Map engine by <a href="https://leafletjs.com/" target="_blank" rel="noopener noreferrer">Leaflet.js</a> &bull;
-        Temple photography licensed via <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia Commons</a> (CC / Public Domain)
-      </p>
-    </div>
-  </footer>
 
   <!-- Leaflet.js CDN Library -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -290,4 +435,3 @@
   <script src="script.js" defer></script>
 </body>
 </html>
-

@@ -2,52 +2,63 @@
  * ============================================================================
  * TEMPLE ATLAS - JAVASCRIPT APPLICATION LOGIC
  * ============================================================================
- * A complete, pure vanilla JavaScript application for an interactive world map
- * of prominent Hindu temples. Built for clarity and educational presentation.
- * 
- * Features:
- * - Decoupled data model loaded from temples.json
- * - Leaflet.js interactive world map with OpenStreetMap tiles
- * - Custom SVG temple marker pins in saffron, maroon, and gold
- * - Smart desktop hover preview with graceful delay for easy button clicking
- * - Full touch support on mobile (tap to open pop-up)
- * - Responsive sliding details panel (right on desktop, bottom on mobile)
- * - Search bar, region filters, world view reset, and full directory drawer
- * - Friendly error handling for file:// protocol and network issues
+ * Pure vanilla JavaScript (ES6+) powering an interactive, modern world atlas
+ * of sacred Hindu temples. Features prominent centering on India on page load,
+ * responsive navigation, and smooth multi-device interactions.
  * ============================================================================
  */
 
 (function () {
   'use strict';
 
+  // --- GEOGRAPHICAL CONSTANTS ---
+  // Centering coordinates and bounding box to frame India prominently on load
+  const INDIA_CENTER = [22.2, 79.2];
+  const INDIA_ZOOM_DESKTOP = 4.8;
+  const INDIA_ZOOM_MOBILE = 4.0;
+  const INDIA_BOUNDS = [
+    [7.5, 68.0],   // Southwest corner (South India & Arabian Sea)
+    [35.5, 96.0]   // Northeast corner (Himalayas & Northeast India)
+  ];
+
   // --- APPLICATION STATE ---
-  let map = null;                    // Leaflet map instance
-  let allTemples = [];               // Complete array of temples loaded from JSON
-  let markerMap = new Map();         // temple.id -> L.Marker
-  let currentActiveTempleId = null;  // ID of currently inspected temple
-  let hoverCloseTimer = null;        // Timer handle for desktop hover pop-up delay
-  let isHoveringPopup = false;       // Flag tracking whether cursor is inside pop-up
+  let map = null;                          // Leaflet map instance
+  let allTemples = [];                     // Master array of temples loaded from JSON
+  let currentlyFilteredTemples = [];       // Temples matching current search/filter
+  let markerMap = new Map();               // temple.id -> L.Marker
+  let currentActiveTempleId = null;        // ID of currently inspected temple
+  let hoverCloseTimer = null;              // Timer handle for desktop hover pop-up delay
+  let isHoveringPopup = false;             // Flag tracking cursor over pop-up
   const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || window.matchMedia('(pointer: coarse)').matches;
 
   // --- DOM ELEMENT REFERENCES ---
   const mapElement = document.getElementById('map');
   const mapLoader = document.getElementById('map-loader');
   const searchInput = document.getElementById('search-input');
+  const btnClearSearch = document.getElementById('btn-clear-search');
   const regionFilter = document.getElementById('region-filter');
   const btnResetView = document.getElementById('btn-reset-view');
   const btnToggleList = document.getElementById('btn-toggle-list');
-  const templeCounterText = document.getElementById('temple-counter-text');
+  const regionChips = document.querySelectorAll('.chip');
 
-  // Details Panel DOM Elements
+  // Details Panel Elements
   const detailsPanel = document.getElementById('details-panel');
   const panelBackdrop = document.getElementById('panel-backdrop');
   const btnCloseDetails = document.getElementById('btn-close-details');
+  const btnPrevTemple = document.getElementById('btn-prev-temple');
+  const btnNextTemple = document.getElementById('btn-next-temple');
   const detailRegionTag = document.getElementById('detail-region-tag');
+  const detailsIndexPill = document.getElementById('details-index-pill');
   const detailTempleName = document.getElementById('detail-temple-name');
   const detailCityCountry = document.getElementById('detail-city-country');
   const detailImage = document.getElementById('detail-image');
   const imageFallback = document.getElementById('image-fallback');
   const detailImageCredit = document.getElementById('detail-image-credit');
+  const imageOverlayBadge = document.getElementById('image-overlay-badge');
+  const factCoordinates = document.getElementById('fact-coordinates');
+  const factRegion = document.getElementById('fact-region');
+  const factStatus = document.getElementById('fact-status');
+  const factHighlight = document.getElementById('fact-highlight');
   const detailSummary = document.getElementById('detail-summary');
   const detailHistory = document.getElementById('detail-history');
   const detailArchitecture = document.getElementById('detail-architecture');
@@ -55,16 +66,26 @@
   const detailSignificance = document.getElementById('detail-significance');
   const detailFestivals = document.getElementById('detail-festivals');
   const btnZoomToActive = document.getElementById('btn-zoom-to-active');
+  const btnShareTemple = document.getElementById('btn-share-temple');
+  const linkOsmExternal = document.getElementById('link-osm-external');
+  const linkFullImage = document.getElementById('link-full-image');
 
-  // Directory Drawer DOM Elements
+  // Directory Drawer Elements
   const listDrawer = document.getElementById('list-drawer');
   const btnCloseDrawer = document.getElementById('btn-close-drawer');
+  const drawerSearchInput = document.getElementById('drawer-search-input');
   const templeListContainer = document.getElementById('temple-list-container');
 
-  // Error Toast DOM Elements
+  // Mobile FAB Elements
+  const mobileBtnDirectory = document.getElementById('mobile-btn-directory');
+  const mobileBtnReset = document.getElementById('mobile-btn-reset');
+
+  // Toast Notification Elements
   const errorToast = document.getElementById('error-toast');
+  const toastIcon = document.getElementById('toast-icon');
   const errorToastText = document.getElementById('error-toast-text');
   const btnDismissToast = document.getElementById('btn-dismiss-toast');
+  let toastTimeout = null;
 
   // --- INITIALIZATION ---
   document.addEventListener('DOMContentLoaded', () => {
@@ -74,21 +95,25 @@
   });
 
   /**
-   * Initializes the Leaflet world map with OpenStreetMap tiles.
-   * Configures global bounds, minimum zoom, and worldCopyJump.
+   * Initializes the Leaflet map centered prominently on India.
+   * Configures global bounds, minimum zoom, and OpenStreetMap tiles.
    */
   function initMap() {
-    // Center map showing the entire world
+    const isMobile = window.innerWidth <= 768;
+    const initialZoom = isMobile ? INDIA_ZOOM_MOBILE : INDIA_ZOOM_DESKTOP;
+
     map = L.map('map', {
-      center: [20, 20],
-      zoom: 2.3,
+      center: INDIA_CENTER,
+      zoom: initialZoom,
       minZoom: 2,
       maxZoom: 18,
       worldCopyJump: true,
-      zoomControl: true
+      zoomControl: true,
+      fadeAnimation: true,
+      zoomAnimation: true
     });
 
-    // Add OpenStreetMap tile layer with full attribution
+    // Add OpenStreetMap tile layer with attribution in map corner
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
@@ -97,7 +122,10 @@
     // Hide loader once map tiles finish initial rendering
     map.whenReady(() => {
       if (mapLoader) {
-        mapLoader.style.display = 'none';
+        mapLoader.style.opacity = '0';
+        setTimeout(() => {
+          mapLoader.style.display = 'none';
+        }, 300);
       }
     });
 
@@ -108,8 +136,33 @@
   }
 
   /**
+   * Prominently centers and frames the map on India.
+   * Automatically calculates optimal bounds based on device viewport.
+   * 
+   * @param {boolean} animate - Whether to animate smoothly
+   */
+  function centerOnIndia(animate = false) {
+    if (!map) return;
+    const isMobile = window.innerWidth <= 768;
+    const bounds = L.latLngBounds(INDIA_BOUNDS);
+
+    if (animate) {
+      map.flyToBounds(bounds, {
+        padding: isMobile ? [20, 20] : [50, 50],
+        maxZoom: 6,
+        duration: 1.2
+      });
+    } else {
+      map.fitBounds(bounds, {
+        padding: isMobile ? [20, 20] : [50, 50],
+        maxZoom: 6
+      });
+    }
+  }
+
+  /**
    * Creates a custom SVG Leaflet DivIcon for a temple marker.
-   * Saffron and deep maroon palette with a sacred shikhara dome icon.
+   * Saffron and imperial maroon palette with a sacred shikhara dome icon.
    * 
    * @param {string} templeId - Unique temple identifier
    * @returns {L.DivIcon} Leaflet DivIcon instance
@@ -117,17 +170,17 @@
   function createTempleIcon(templeId) {
     const iconHtml = `
       <div class="temple-pin" id="pin-${templeId}" role="button" aria-label="Temple marker">
-        <svg viewBox="0 0 36 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Pin Body -->
-          <path d="M18 1C8.611 1 1 8.611 1 18C1 28.5 18 43 18 43C18 43 35 28.5 35 18C35 8.611 27.389 1 18 1Z" 
-                fill="#54111B" stroke="#C59B27" stroke-width="2"/>
-          <!-- Inner Saffron Halo -->
-          <circle cx="18" cy="18" r="13" fill="#D95A15" stroke="#E5B842" stroke-width="1.2"/>
-          <!-- Sacred Temple Shikhara / Kalasha Silhouette -->
-          <path d="M18 7L22 13H14L18 7Z" fill="#FFF9F0"/>
-          <path d="M13 13H23L24.5 19H11.5L13 13Z" fill="#FFF9F0"/>
-          <path d="M11 19H25V24C25 24.8 24.3 25.5 23.5 25.5H12.5C11.7 25.5 11 24.8 11 24V19Z" fill="#FFF9F0"/>
-          <circle cx="18" cy="22" r="1.5" fill="#54111B"/>
+        <svg viewBox="0 0 38 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer Shadow Pin Outline -->
+          <path d="M19 1C9.611 1 2 8.611 2 18C2 29 19 45 19 45C19 45 36 29 36 18C36 8.611 28.389 1 19 1Z" 
+                fill="#380A12" stroke="#CBA338" stroke-width="2"/>
+          <!-- Inner Radiant Saffron Halo -->
+          <circle cx="19" cy="18" r="13" fill="#D95A15" stroke="#E5BE53" stroke-width="1.2"/>
+          <!-- Sacred Temple Shikhara / Kalasha Emblem -->
+          <path d="M19 7L23 13H15L19 7Z" fill="#FFF9F0"/>
+          <path d="M14 13H24L25.5 19H12.5L14 13Z" fill="#FFF9F0"/>
+          <path d="M12 19H26V24.5C26 25.3 25.3 26 24.5 26H13.5C12.7 26 12 25.3 12 24.5V19Z" fill="#FFF9F0"/>
+          <circle cx="19" cy="22.5" r="1.5" fill="#380A12"/>
         </svg>
       </div>
     `;
@@ -135,15 +188,15 @@
     return L.divIcon({
       html: iconHtml,
       className: 'temple-marker-icon',
-      iconSize: [36, 44],
-      iconAnchor: [18, 44],     // Tip of the pin sits exactly on the latitude/longitude
-      popupAnchor: [0, -42]     // Popup floats comfortably right above the pin
+      iconSize: [38, 46],
+      iconAnchor: [19, 46],     // Tip of pin sits precisely on the coordinate
+      popupAnchor: [0, -44]     // Popup opens smoothly above pin
     });
   }
 
   /**
    * Fetches temple data asynchronously from temples.json.
-   * Handles errors gracefully (e.g. CORS errors when opened via file://).
+   * Automatically displays India prominently at the center of the homepage.
    */
   async function loadTempleData() {
     try {
@@ -153,35 +206,40 @@
       }
       const data = await response.json();
       allTemples = data;
+      currentlyFilteredTemples = [...allTemples];
 
-      // Populate markers on the map and populate directory drawer
+      // Render all temple markers on the map
       renderMarkers(allTemples);
       renderDirectoryList(allTemples);
-      updateStatusCounter(allTemples.length, allTemples.length);
 
-      // Fit map bounds to show all markers neatly
-      fitMapToMarkers(allTemples);
+      // Display India prominently at the center on initial homepage load
+      if (!window.location.hash) {
+        centerOnIndia(false);
+      } else {
+        // If loaded with a specific URL hash (e.g. #angkor-wat), open that temple
+        checkUrlHash();
+      }
     } catch (err) {
       console.error('Failed to load temple data:', err);
-      showErrorMessage(
-        'Could not load temple data from temples.json. ' +
-        'If opening locally, please run a simple local web server (such as "python3 -m http.server") ' +
-        'because modern web browsers block JSON fetch requests across local file:// paths for security.'
+      showToast(
+        'Could not load temple data from temples.json. If running locally, please start a local server (e.g. "python3 -m http.server") due to browser security restrictions on file:// paths.',
+        '⚠️',
+        10000
       );
       if (mapLoader) {
-        mapLoader.innerHTML = '<p style="color:#bf2600;">⚠️ Could not load temples.json<br><small>Requires local or hosted web server</small></p>';
+        mapLoader.innerHTML = '<p style="color:#b33e06;font-weight:700;">⚠️ Could not load temples.json<br><small style="color:var(--text-secondary);font-weight:400;">Requires local or hosted web server</small></p>';
       }
     }
   }
 
   /**
    * Renders markers for the given list of temples on the Leaflet map.
-   * Configures smart hover behavior for desktop and tap behavior for mobile.
+   * Configures smart hover behavior for desktop and touch tap behavior for mobile.
    * 
    * @param {Array} temples - Array of temple objects
    */
   function renderMarkers(temples) {
-    // Clear any existing markers
+    // Clear previous markers
     markerMap.forEach(marker => marker.remove());
     markerMap.clear();
 
@@ -193,50 +251,54 @@
         alt: temple.name
       });
 
-      // Construct Pop-up Content
+      // Construct High-End Pop-up Content with Image Preview Banner
       const popupContent = `
         <article class="popup-card">
-          <span class="popup-tag">${escapeHtml(temple.region || 'Sacred Site')}</span>
-          <h3 class="popup-title">${escapeHtml(temple.name)}</h3>
-          <div class="popup-location">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            <span>${escapeHtml(temple.city)}, ${escapeHtml(temple.country)}</span>
+          <div class="popup-image-banner">
+            <img class="popup-thumb" src="${escapeHtml(temple.imageUrl)}" alt="${escapeHtml(temple.name)}" loading="lazy" referrerpolicy="no-referrer">
+            <span class="popup-tag">${escapeHtml(temple.region || 'Sacred Site')}</span>
           </div>
-          <p class="popup-summary">${escapeHtml(temple.summary)}</p>
-          <button type="button" class="btn btn-primary popup-btn" onclick="window.TempleAtlas.openDetails('${escapeHtml(temple.id)}')">
-            More Details &rarr;
-          </button>
+          <div class="popup-body">
+            <h3 class="popup-title">${escapeHtml(temple.name)}</h3>
+            <div class="popup-location">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span>${escapeHtml(temple.city)}, ${escapeHtml(temple.country)}</span>
+            </div>
+            <p class="popup-summary">${escapeHtml(temple.summary)}</p>
+            <button type="button" class="btn btn-primary popup-btn" onclick="window.TempleAtlas.openDetails('${escapeHtml(temple.id)}')">
+              Explore Details &rarr;
+            </button>
+          </div>
         </article>
       `;
 
       // Bind the popup to the marker
       const popup = L.popup({
-        offset: [0, -38],
+        offset: [0, -40],
         closeButton: true,
         autoPan: true,
-        autoPanPadding: [30, 30]
+        autoPanPadding: [40, 40]
       }).setContent(popupContent);
 
       marker.bindPopup(popup);
 
       // --- MOUSE & TOUCH EVENT BINDINGS ---
       if (!isTouchDevice) {
-        // DESKTOP: Smooth Hover Behavior
-        // When hovering over the marker, open popup immediately and cancel any close timer
+        // DESKTOP: Smooth Hover Preview
         marker.on('mouseover', () => {
           clearHoverTimer();
           marker.openPopup();
 
-          // Wait a tick for the popup DOM element to exist, then attach hover listeners
+          // When popup DOM exists, attach hover tracking
           setTimeout(() => {
             const popupElement = popup.getElement();
             if (popupElement && !popupElement.dataset.hoverAttached) {
               popupElement.dataset.hoverAttached = 'true';
 
-              // Cursor entered the popup: cancel closing so user can click "More Details"
+              // Cursor entered the popup: keep it open
               popupElement.addEventListener('mouseenter', () => {
                 isHoveringPopup = true;
                 clearHoverTimer();
@@ -251,7 +313,7 @@
           }, 50);
         });
 
-        // When mouse leaves marker, start close countdown (350ms window allows moving mouse onto popup)
+        // When mouse leaves marker, start countdown
         marker.on('mouseout', () => {
           if (!isHoveringPopup) {
             startHoverCloseTimer(popup);
@@ -259,8 +321,7 @@
         });
       }
 
-      // CLICK / TAP (Desktop and Mobile):
-      // Clicking marker opens popup permanently (cancelling hover close timers)
+      // CLICK / TAP: Opens popup permanently and centers smoothly
       marker.on('click', () => {
         clearHoverTimer();
         marker.openPopup();
@@ -273,7 +334,7 @@
 
   /**
    * Starts a graceful delay timer before closing a hover pop-up.
-   * Gives users plenty of time (380ms) to move mouse from pin onto the pop-up button.
+   * Provides 400ms so users can comfortably move mouse onto "Explore Details".
    */
   function startHoverCloseTimer(popup) {
     clearHoverTimer();
@@ -281,11 +342,11 @@
       if (!isHoveringPopup && map) {
         map.closePopup(popup);
       }
-    }, 380);
+    }, 400);
   }
 
   /**
-   * Clears any active pop-up hover close countdown.
+   * Clears any active pop-up hover close timer.
    */
   function clearHoverTimer() {
     if (hoverCloseTimer) {
@@ -299,30 +360,58 @@
    * Populates history, architecture, location, significance, festivals, and image.
    * 
    * @param {string} templeId - Unique temple identifier
+   * @param {boolean} updateHash - Whether to update browser URL hash
    */
-  function openDetailsPanel(templeId) {
-    const temple = allTemples.find(t => t.id === templeId);
-    if (!temple) return;
+  function openDetailsPanel(templeId, updateHash = true) {
+    const templeIndex = allTemples.findIndex(t => t.id === templeId);
+    if (templeIndex === -1) return;
 
+    const temple = allTemples[templeIndex];
     currentActiveTempleId = templeId;
     clearHoverTimer();
 
-    // Close any floating popup on map so view is clean
+    // Close any floating popup on map
     if (map) {
       map.closePopup();
     }
 
-    // Populate details panel content
+    // Update URL hash for bookmarking & direct sharing
+    if (updateHash && window.location.hash !== `#${temple.id}`) {
+      history.replaceState(null, '', `#${temple.id}`);
+    }
+
+    // Populate header tags & index counter
     detailRegionTag.textContent = temple.region || 'Sacred Temple';
+    detailsIndexPill.textContent = `Temple ${templeIndex + 1} of ${allTemples.length}`;
     detailTempleName.textContent = temple.name;
     detailCityCountry.textContent = `${temple.city}, ${temple.country}`;
+
+    // Populate Quick Facts Grid
+    const latStr = temple.latitude >= 0 ? `${temple.latitude.toFixed(4)}° N` : `${Math.abs(temple.latitude).toFixed(4)}° S`;
+    const lngStr = temple.longitude >= 0 ? `${temple.longitude.toFixed(4)}° E` : `${Math.abs(temple.longitude).toFixed(4)}° W`;
+    factCoordinates.textContent = `${latStr}, ${lngStr}`;
+    factRegion.textContent = temple.region || temple.country;
+    factStatus.textContent = temple.country;
+    
+    // Extract a concise highlight for the quick fact card
+    let highlightSnippet = "Prominent Monument";
+    if (temple.summary.includes("largest")) highlightSnippet = "World-Record Scale";
+    else if (temple.summary.includes("UNESCO")) highlightSnippet = "UNESCO Heritage";
+    else if (temple.summary.includes("century")) highlightSnippet = "Ancient Heritage";
+    else if (temple.summary.includes("Jyotirlinga")) highlightSnippet = "Sacred Jyotirlinga";
+    factHighlight.textContent = highlightSnippet;
+
+    // Narrative content
     detailSummary.textContent = temple.summary;
     detailHistory.textContent = temple.history;
     detailArchitecture.textContent = temple.architecture;
     detailLocation.textContent = temple.location;
     detailSignificance.textContent = temple.significance;
 
-    // Populate Festivals as badges
+    // External OpenStreetMap link
+    linkOsmExternal.href = `https://www.openstreetmap.org/?mlat=${temple.latitude}&mlon=${temple.longitude}#map=16/${temple.latitude}/${temple.longitude}`;
+
+    // Populate Festivals as modern pill tags
     detailFestivals.innerHTML = '';
     if (Array.isArray(temple.festivals) && temple.festivals.length > 0) {
       temple.festivals.forEach(fest => {
@@ -332,15 +421,24 @@
       });
     }
 
-    // Handle Image Loading and Fallback
+    // Handle Image Loading with Skeleton & Fallback
+    const imageSkeleton = detailsPanel.querySelector('.image-skeleton');
+    if (imageSkeleton) imageSkeleton.style.display = 'block';
     imageFallback.style.display = 'none';
     detailImage.style.display = 'block';
+    detailImage.style.opacity = '0';
     detailImage.src = temple.imageUrl;
     detailImage.alt = `Photograph of ${temple.name}`;
     detailImageCredit.textContent = temple.imageCredit || 'Wikimedia Commons';
+    imageOverlayBadge.textContent = temple.city;
 
-    // Graceful error handler if image fails to load
+    detailImage.onload = () => {
+      if (imageSkeleton) imageSkeleton.style.display = 'none';
+      detailImage.style.opacity = '1';
+    };
+
     detailImage.onerror = () => {
+      if (imageSkeleton) imageSkeleton.style.display = 'none';
       detailImage.style.display = 'none';
       imageFallback.style.display = 'flex';
       imageFallback.querySelector('p').textContent = `${temple.name} (${temple.country})`;
@@ -353,26 +451,43 @@
     detailsPanel.classList.add('active');
     detailsPanel.setAttribute('aria-hidden', 'false');
 
-    // On mobile, show the dark backdrop
+    // On mobile, show the dark backdrop and lock body scroll
     if (window.innerWidth <= 768) {
       panelBackdrop.classList.add('active');
+      document.body.classList.add('drawer-open');
     }
 
-    // Close directory drawer if it was open
+    // Close directory drawer if open
     closeDirectoryDrawer();
 
-    // Smoothly pan map to center the active temple
-    if (map) {
-      map.panTo([temple.latitude, temple.longitude], {
-        animate: true,
-        duration: 0.75
-      });
-    }
+    // Smoothly pan map to center temple
+    panToTempleSmoothly(temple);
 
     // Scroll details panel back to top
     const scrollContainer = document.getElementById('details-scroll');
     if (scrollContainer) {
       scrollContainer.scrollTop = 0;
+    }
+  }
+
+  /**
+   * Smoothly pans to a temple taking into account desktop drawer width
+   * so the marker is not covered by the sliding panel.
+   */
+  function panToTempleSmoothly(temple) {
+    if (!map) return;
+
+    if (window.innerWidth > 768) {
+      const zoom = Math.max(map.getZoom(), 5);
+      map.setView([temple.latitude, temple.longitude], zoom, {
+        animate: true,
+        duration: 0.75
+      });
+    } else {
+      map.panTo([temple.latitude, temple.longitude], {
+        animate: true,
+        duration: 0.75
+      });
     }
   }
 
@@ -383,6 +498,12 @@
     detailsPanel.classList.remove('active');
     detailsPanel.setAttribute('aria-hidden', 'true');
     panelBackdrop.classList.remove('active');
+    document.body.classList.remove('drawer-open');
+
+    // Clear hash cleanly without jumping
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
 
     // Remove marker pin highlight
     if (currentActiveTempleId) {
@@ -393,12 +514,28 @@
   }
 
   /**
-   * Highlights the marker pin of the active temple.
+   * Navigates to previous or next temple in the list.
+   * 
+   * @param {number} direction - -1 for previous, +1 for next
+   */
+  function navigateTemple(direction) {
+    if (!allTemples.length) return;
+
+    let currentIndex = allTemples.findIndex(t => t.id === currentActiveTempleId);
+    if (currentIndex === -1) currentIndex = 0;
+
+    let nextIndex = currentIndex + direction;
+    if (nextIndex < 0) nextIndex = allTemples.length - 1;
+    if (nextIndex >= allTemples.length) nextIndex = 0;
+
+    openDetailsPanel(allTemples[nextIndex].id);
+  }
+
+  /**
+   * Highlights the marker pin of the active temple with glowing pulse.
    */
   function highlightMarker(templeId) {
-    // Un-highlight previous
     document.querySelectorAll('.temple-pin.selected').forEach(el => el.classList.remove('selected'));
-
     const pin = document.getElementById(`pin-${templeId}`);
     if (pin) {
       pin.classList.add('selected');
@@ -406,13 +543,13 @@
   }
 
   /**
-   * Populates the Temple Directory drawer list.
+   * Populates the Temple Directory drawer list with searchable cards.
    */
   function renderDirectoryList(temples) {
     templeListContainer.innerHTML = '';
 
     if (temples.length === 0) {
-      templeListContainer.innerHTML = '<p style="padding:1rem;color:var(--text-muted);text-align:center;">No temples found matching your filter.</p>';
+      templeListContainer.innerHTML = '<p style="padding:1.5rem;color:var(--text-muted);text-align:center;">No temples found matching your filter.</p>';
       return;
     }
 
@@ -431,10 +568,15 @@
           <span class="card-name">${escapeHtml(temple.name)}</span>
           <span class="card-region">${escapeHtml(temple.region || 'Sacred')}</span>
         </div>
-        <div class="card-loc">📍 ${escapeHtml(temple.city)}, ${escapeHtml(temple.country)}</div>
+        <div class="card-loc">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <span>${escapeHtml(temple.city)}, ${escapeHtml(temple.country)}</span>
+        </div>
       `;
 
-      // Click or Enter key selects temple
       const selectTemple = () => {
         closeDirectoryDrawer();
         openDetailsPanel(temple.id);
@@ -460,7 +602,12 @@
     listDrawer.setAttribute('aria-hidden', 'false');
     btnToggleList.setAttribute('aria-expanded', 'true');
     panelBackdrop.classList.add('active');
+    document.body.classList.add('drawer-open');
     closeDetailsPanel();
+
+    if (drawerSearchInput) {
+      setTimeout(() => drawerSearchInput.focus(), 200);
+    }
   }
 
   /**
@@ -472,90 +619,146 @@
     btnToggleList.setAttribute('aria-expanded', 'false');
     if (!detailsPanel.classList.contains('active')) {
       panelBackdrop.classList.remove('active');
+      document.body.classList.remove('drawer-open');
     }
   }
 
   /**
    * Applies search and region filters to the temple list.
+   * Updates map markers and directory list.
+   * 
+   * @param {boolean} autoFit - Whether to adjust map view bounds automatically
    */
-  function applyFilters() {
+  function applyFilters(autoFit = true) {
     const searchTerm = (searchInput.value || '').trim().toLowerCase();
     const selectedRegion = regionFilter.value;
 
-    const filtered = allTemples.filter(temple => {
-      // Region Match
-      const matchesRegion = (selectedRegion === 'all') || (temple.region === selectedRegion);
+    if (btnClearSearch) {
+      btnClearSearch.style.display = searchTerm ? 'flex' : 'none';
+    }
 
-      // Search Query Match (matches name, city, country, or summary)
+    const filtered = allTemples.filter(temple => {
+      const matchesRegion = (selectedRegion === 'all') || (temple.region === selectedRegion);
       const matchesSearch = !searchTerm ||
         temple.name.toLowerCase().includes(searchTerm) ||
         temple.city.toLowerCase().includes(searchTerm) ||
         temple.country.toLowerCase().includes(searchTerm) ||
-        (temple.summary && temple.summary.toLowerCase().includes(searchTerm));
+        (temple.summary && temple.summary.toLowerCase().includes(searchTerm)) ||
+        (temple.architecture && temple.architecture.toLowerCase().includes(searchTerm));
 
       return matchesRegion && matchesSearch;
     });
 
+    currentlyFilteredTemples = filtered;
     renderMarkers(filtered);
     renderDirectoryList(filtered);
-    updateStatusCounter(filtered.length, allTemples.length);
 
-    if (filtered.length > 0) {
-      fitMapToMarkers(filtered);
-    }
-  }
-
-  /**
-   * Fits map viewport bounds to display all current markers nicely.
-   */
-  function fitMapToMarkers(temples) {
-    if (!map || temples.length === 0) return;
-
-    if (temples.length === allTemples.length) {
-      // If showing all, set a balanced world view
-      map.setView([20, 20], 2.3);
-      return;
-    }
-
-    const bounds = L.latLngBounds(temples.map(t => [t.latitude, t.longitude]));
-    map.fitBounds(bounds, {
-      padding: [50, 50],
-      maxZoom: 12
-    });
-  }
-
-  /**
-   * Resets map view and clears any active filters.
-   */
-  function resetWorldView() {
-    searchInput.value = '';
-    regionFilter.value = 'all';
-    applyFilters();
-    closeDetailsPanel();
-    closeDirectoryDrawer();
-    map.setView([20, 20], 2.3);
-  }
-
-  /**
-   * Updates the floating status counter (e.g., "Showing 20 of 20 temples").
-   */
-  function updateStatusCounter(visibleCount, totalCount) {
-    if (templeCounterText) {
-      if (visibleCount === totalCount) {
-        templeCounterText.textContent = `Showing all ${totalCount} sacred sites`;
+    if (autoFit && filtered.length > 0) {
+      if (selectedRegion === 'all' && !searchTerm) {
+        centerOnIndia(true);
       } else {
-        templeCounterText.textContent = `Showing ${visibleCount} of ${totalCount} sacred sites`;
+        fitMapToMarkers(filtered);
       }
     }
   }
 
   /**
-   * Displays an error message banner/toast.
+   * Fits map viewport bounds to display current matching markers.
    */
-  function showErrorMessage(message) {
-    if (errorToast && errorToastText) {
-      errorToastText.innerHTML = message;
-      errorToast.style.display = 'flex';
+  function fitMapToMarkers(temples) {
+    if (!map || temples.length === 0) return;
+
+    if (temples.length === allTemples.length) {
+      centerOnIndia(true);
+      return;
+    }
+
+    const bounds = L.latLngBounds(temples.map(t => [t.latitude, t.longitude]));
+    map.fitBounds(bounds, {
+      padding: [60, 60],
+      maxZoom: 10
+    });
+  }
+
+  /**
+   * Resets map view, clears filters, and returns to prominent India overview.
+   */
+  function resetWorldView() {
+    searchInput.value = '';
+    if (btnClearSearch) btnClearSearch.style.display = 'none';
+    regionFilter.value = 'all';
+
+    // Reset region chips active state
+    regionChips.forEach(chip => {
+      if (chip.dataset.region === 'all') {
+        chip.classList.add('active');
+        chip.setAttribute('aria-selected', 'true');
+      } else {
+        chip.classList.remove('active');
+        chip.setAttribute('aria-selected', 'false');
+      }
+    });
+
+    applyFilters(false);
+    closeDetailsPanel();
+    closeDirectoryDrawer();
+    centerOnIndia(true);
+    showToast('Map centered on India', '🇮🇳', 2500);
+  }
+
+  /**
+   * Checks for URL hash upon page load (e.g. #angkor-wat).
+   */
+  function checkUrlHash() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const match = allTemples.find(t => t.id === hash);
+      if (match) {
+        setTimeout(() => {
+          openDetailsPanel(match.id, false);
+        }, 300);
+      }
+    }
+  }
+
+  /**
+   * Displays a modern toast notification message.
+   */
+  function showToast(message, icon = 'ℹ️', duration = 3500) {
+    if (!errorToast || !errorToastText) return;
+
+    if (toastIcon) toastIcon.textContent = icon;
+    errorToastText.innerHTML = message;
+    errorToast.style.display = 'flex';
+
+    if (toastTimeout) {
+      clearTimeout(toastTimeout);
+    }
+
+    toastTimeout = setTimeout(() => {
+      errorToast.style.display = 'none';
+    }, duration);
+  }
+
+  /**
+   * Copies current temple link & coordinates to clipboard.
+   */
+  function shareCurrentTemple() {
+    if (!currentActiveTempleId) return;
+
+    const temple = allTemples.find(t => t.id === currentActiveTempleId);
+    if (!temple) return;
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}#${temple.id}`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast(`Link copied to clipboard for ${temple.name}!`, '📋', 3000);
+      }).catch(() => {
+        showToast(`Temple: ${temple.name} (#${temple.id})`, '📍', 3000);
+      });
+    } else {
+      showToast(`Link: ${shareUrl}`, '🔗', 4000);
     }
   }
 
@@ -573,20 +776,63 @@
   }
 
   /**
-   * Sets up all DOM event listeners for buttons, inputs, and keyboard shortcuts.
+   * Sets up all DOM event listeners for buttons, inputs, chips, and keyboard.
    */
   function setupEventListeners() {
-    // Search input typing
+    // Search input live typing
     searchInput.addEventListener('input', () => {
       applyFilters();
     });
 
-    // Region dropdown selection
+    // Clear search button
+    if (btnClearSearch) {
+      btnClearSearch.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.focus();
+        applyFilters();
+      });
+    }
+
+    // Keyboard shortcut: Press '/' to focus search input
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== searchInput && document.activeElement !== drawerSearchInput) {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    // Region dropdown selection (keeps chips in sync)
     regionFilter.addEventListener('change', () => {
+      const selected = regionFilter.value;
+      regionChips.forEach(chip => {
+        if (chip.dataset.region === selected) {
+          chip.classList.add('active');
+          chip.setAttribute('aria-selected', 'true');
+        } else {
+          chip.classList.remove('active');
+          chip.setAttribute('aria-selected', 'false');
+        }
+      });
       applyFilters();
     });
 
-    // Reset view button
+    // Region Chips Bar Clicks
+    regionChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        regionChips.forEach(c => {
+          c.classList.remove('active');
+          c.setAttribute('aria-selected', 'false');
+        });
+        chip.classList.add('active');
+        chip.setAttribute('aria-selected', 'true');
+
+        const region = chip.dataset.region;
+        regionFilter.value = region;
+        applyFilters();
+      });
+    });
+
+    // Center on India View Reset Button
     btnResetView.addEventListener('click', () => {
       resetWorldView();
     });
@@ -600,15 +846,49 @@
       }
     });
 
-    // Close Details Panel button
+    // Drawer search input filtering
+    if (drawerSearchInput) {
+      drawerSearchInput.addEventListener('input', () => {
+        const query = (drawerSearchInput.value || '').trim().toLowerCase();
+        const items = templeListContainer.querySelectorAll('.temple-card-item');
+        items.forEach(item => {
+          const text = item.textContent.toLowerCase();
+          item.style.display = text.includes(query) ? 'flex' : 'none';
+        });
+      });
+    }
+
+    // Close Details Panel Button
     btnCloseDetails.addEventListener('click', () => {
       closeDetailsPanel();
     });
 
-    // Close Directory Drawer button
+    // Previous & Next Temple Navigation Buttons
+    btnPrevTemple.addEventListener('click', () => {
+      navigateTemple(-1);
+    });
+
+    btnNextTemple.addEventListener('click', () => {
+      navigateTemple(1);
+    });
+
+    // Close Directory Drawer Button
     btnCloseDrawer.addEventListener('click', () => {
       closeDirectoryDrawer();
     });
+
+    // Mobile FAB Buttons
+    if (mobileBtnDirectory) {
+      mobileBtnDirectory.addEventListener('click', () => {
+        openDirectoryDrawer();
+      });
+    }
+
+    if (mobileBtnReset) {
+      mobileBtnReset.addEventListener('click', () => {
+        resetWorldView();
+      });
+    }
 
     // Backdrop click closes any open sheet or drawer
     panelBackdrop.addEventListener('click', () => {
@@ -616,17 +896,24 @@
       closeDirectoryDrawer();
     });
 
-    // Zoom in on Active Temple button in details footer
+    // Zoom to Active Temple button
     btnZoomToActive.addEventListener('click', () => {
       if (currentActiveTempleId) {
         const temple = allTemples.find(t => t.id === currentActiveTempleId);
         if (temple && map) {
-          map.setView([temple.latitude, temple.longitude], 14, {
+          map.setView([temple.latitude, temple.longitude], 15, {
             animate: true
           });
         }
       }
     });
+
+    // Share Temple Button
+    if (btnShareTemple) {
+      btnShareTemple.addEventListener('click', () => {
+        shareCurrentTemple();
+      });
+    }
 
     // Dismiss Error Toast
     if (btnDismissToast) {
@@ -635,7 +922,7 @@
       });
     }
 
-    // Global Keyboard Shortcuts (Escape key closes open panels)
+    // Global Keyboard Shortcuts (Escape, Left Arrow, Right Arrow)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         if (detailsPanel.classList.contains('active')) {
@@ -643,10 +930,29 @@
         } else if (listDrawer.classList.contains('active')) {
           closeDirectoryDrawer();
         }
+      } else if (detailsPanel.classList.contains('active')) {
+        if (e.key === 'ArrowLeft') {
+          navigateTemple(-1);
+        } else if (e.key === 'ArrowRight') {
+          navigateTemple(1);
+        }
       }
     });
 
-    // Handle window resize for map responsiveness
+    // Listen to hashchange events for browser back/forward buttons
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const match = allTemples.find(t => t.id === hash);
+        if (match && currentActiveTempleId !== match.id) {
+          openDetailsPanel(match.id, false);
+        }
+      } else if (detailsPanel.classList.contains('active')) {
+        closeDetailsPanel();
+      }
+    });
+
+    // Handle window resize gracefully
     window.addEventListener('resize', () => {
       if (map) {
         map.invalidateSize();
@@ -655,11 +961,11 @@
   }
 
   // --- EXPOSE GLOBAL NAMESPACE ---
-  // Expose openDetails method so Leaflet pop-up buttons can trigger panel cleanly
   window.TempleAtlas = {
     openDetails: openDetailsPanel,
-    resetView: resetWorldView
+    resetView: resetWorldView,
+    centerIndia: centerOnIndia,
+    navigate: navigateTemple
   };
 
 })();
-
