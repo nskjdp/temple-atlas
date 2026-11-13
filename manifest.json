@@ -1,22 +1,32 @@
 {
-  "name": "Temple Atlas",
+  "name": "Temple Atlas — Sacred Hindu Temples Across the Globe",
   "short_name": "Temple Atlas",
-  "description": "Interactive world map of prominent Hindu temples.",
-  "start_url": ".",
+  "description": "An interactive world map exploring prominent Hindu temples across the globe, showcasing sacred architectural heritage and history.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#fff8f0",
+  "orientation": "any",
+  "background_color": "#fff9f0",
   "theme_color": "#30060d",
+  "categories": ["education", "travel", "culture"],
   "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "icons/icon-192.svg",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
       "src": "icons/icon-512.svg",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
-

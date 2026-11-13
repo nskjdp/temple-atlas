@@ -1,12 +1,119 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background transparent -->
-  <rect width="192" height="192" fill="none" />
-  <!-- Base of temple (maroon) -->
-  <rect x="48" y="120" width="96" height="48" fill="#800000" />
-  <!-- Shikhara roof (saffron) -->
-  <polygon points="96,24 48,120 144,120" fill="#ff9933" />
-  <!-- Dome (maroon) -->
-  <circle cx="96" cy="84" r="12" fill="#800000" />
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="192" height="192">
+  <defs>
+    <!-- Deep Imperial Maroon Background Gradient -->
+    <linearGradient id="bgGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#450a14" />
+      <stop offset="50%" stop-color="#2a050c" />
+      <stop offset="100%" stop-color="#150205" />
+    </linearGradient>
 
+    <!-- Radiant Gold Rim Gradient -->
+    <linearGradient id="goldRim192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fae08c" />
+      <stop offset="30%" stop-color="#d4af37" />
+      <stop offset="70%" stop-color="#aa8020" />
+      <stop offset="100%" stop-color="#fdf1b8" />
+    </linearGradient>
+
+    <!-- Sacred Saffron Inner Glow -->
+    <radialGradient id="innerGlow192" cx="50%" cy="58%" r="48%">
+      <stop offset="0%" stop-color="#ff7b1a" stop-opacity="0.85" />
+      <stop offset="45%" stop-color="#b33e06" stop-opacity="0.4" />
+      <stop offset="85%" stop-color="#450a14" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Architectural Gold Gradient -->
+    <linearGradient id="archGold192" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff5cc" />
+      <stop offset="30%" stop-color="#e5be53" />
+      <stop offset="70%" stop-color="#cba338" />
+      <stop offset="100%" stop-color="#916a15" />
+    </linearGradient>
+
+    <!-- Sacred Diya Flame Glow -->
+    <radialGradient id="flameGlow192" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#ffe680" />
+      <stop offset="70%" stop-color="#ff6f00" />
+      <stop offset="100%" stop-color="#d83a00" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Drop Shadow for Structure -->
+    <filter id="templeShadow192" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Circular Outer Medallion -->
+  <circle cx="256" cy="256" r="248" fill="url(#bgGrad192)" stroke="url(#goldRim192)" stroke-width="12" />
+  <circle cx="256" cy="256" r="236" fill="none" stroke="#d4af37" stroke-width="2" stroke-dasharray="6,4" opacity="0.6" />
+  
+  <!-- Sacred Saffron Radial Atmosphere -->
+  <circle cx="256" cy="256" r="232" fill="url(#innerGlow192)" />
+
+  <!-- Temple Architectural Silhouette & Carvings -->
+  <g filter="url(#templeShadow192)">
+    <!-- Kalasha (Golden Urn Finial & Pinnacle Spire) -->
+    <path d="M256 58 L261 74 L256 79 L251 74 Z" fill="#fffbe6" />
+    <circle cx="256" cy="85" r="9" fill="url(#archGold192)" stroke="#fff5cc" stroke-width="1.5" />
+    <path d="M256 94 L264 104 L248 104 Z" fill="url(#archGold192)" />
+
+    <!-- Amalaka (Ribbed Stone Disc Cap) -->
+    <ellipse cx="256" cy="110" rx="26" ry="7" fill="url(#archGold192)" stroke="#664608" stroke-width="1" />
+    <path d="M236 110 Q256 104 276 110" stroke="#fff9d6" stroke-width="1.5" fill="none" />
+
+    <!-- Shikhara Tier 1 (Apex Spire) -->
+    <path d="M242 116 L270 116 L278 142 L234 142 Z" fill="url(#archGold192)" />
+    <path d="M256 116 L256 142" stroke="#6b4c09" stroke-width="2" />
+    <path d="M246 128 L266 128" stroke="#fff3be" stroke-width="1.5" />
+
+    <!-- Shikhara Tier 2 (Upper Middle Tower) -->
+    <path d="M228 144 L284 144 L294 180 L218 180 Z" fill="url(#archGold192)" />
+    <!-- Miniature Urushringa Side Towers -->
+    <path d="M218 180 L228 144 L236 180 Z" fill="#b88f28" />
+    <path d="M294 180 L284 144 L276 180 Z" fill="#b88f28" />
+    <!-- Center Carving -->
+    <path d="M256 144 L256 180" stroke="#5a3d04" stroke-width="2" />
+    <path d="M238 162 L274 162" stroke="#fff9d6" stroke-width="2" />
+
+    <!-- Shikhara Tier 3 (Main Tower Body with Cornices) -->
+    <path d="M212 182 L300 182 L312 232 L200 232 Z" fill="url(#archGold192)" />
+    <!-- Flanking Towerlets -->
+    <path d="M200 232 L212 182 L224 232 Z" fill="#a47d1e" />
+    <path d="M312 232 L300 182 L288 232 Z" fill="#a47d1e" />
+    <circle cx="256" cy="204" r="10" fill="#2d050c" stroke="#e5be53" stroke-width="2" />
+    <path d="M222 216 L290 216" stroke="#5c3f06" stroke-width="2" />
+
+    <!-- Mandapa Roof & Chhajja (Eaves Projection) -->
+    <path d="M168 234 L344 234 L360 252 L152 252 Z" fill="url(#goldRim192)" />
+    <rect x="156" y="252" width="200" height="8" fill="#4d0913" stroke="#d4af37" stroke-width="1.2" />
+
+    <!-- Main Sanctum Body (Garbhagriha & Pillars) -->
+    <rect x="164" y="260" width="184" height="120" fill="url(#archGold192)" />
+    <!-- Pillar Reliefs -->
+    <rect x="174" y="260" width="18" height="120" fill="#9e771c" stroke="#ffe082" stroke-width="1" />
+    <rect x="320" y="260" width="18" height="120" fill="#9e771c" stroke="#ffe082" stroke-width="1" />
+    <rect x="206" y="260" width="14" height="120" fill="#b88f28" />
+    <rect x="292" y="260" width="14" height="120" fill="#b88f28" />
+
+    <!-- Sanctum Arched Entrance (Torana Gateway) -->
+    <path d="M224 380 L224 300 Q256 270 288 300 L288 380 Z" fill="#180206" stroke="#e5be53" stroke-width="3" />
+    <!-- Inner Sanctum Glow -->
+    <path d="M230 380 L230 306 Q256 280 282 306 L282 380 Z" fill="url(#flameGlow192)" opacity="0.95" />
+
+    <!-- Sacred Diya (Lamp of Eternity) -->
+    <path d="M242 364 Q256 376 270 364 Q256 358 242 364 Z" fill="#d4af37" stroke="#5e4006" stroke-width="1" />
+    <!-- Diya Flame -->
+    <path d="M256 340 Q262 352 256 360 Q250 352 256 340 Z" fill="#ffffff" stroke="#ff9100" stroke-width="2" />
+
+    <!-- Grand Plinth Base (Adhisthana Stepped Foundation) -->
+    <path d="M142 380 L370 380 L382 400 L130 400 Z" fill="url(#goldRim192)" />
+    <rect x="120" y="400" width="272" height="16" fill="#380811" stroke="#d4af37" stroke-width="2" />
+    <rect x="108" y="416" width="296" height="14" fill="#200408" stroke="#aa8020" stroke-width="1.5" />
+    <!-- Steps Leading to Sanctum -->
+    <path d="M214 380 L298 380 L304 430 L208 430 Z" fill="#785510" stroke="#f0d075" stroke-width="1.5" />
+    <line x1="212" y1="394" x2="300" y2="394" stroke="#ffd97d" stroke-width="1.5" />
+    <line x1="210" y1="408" x2="302" y2="408" stroke="#ffd97d" stroke-width="1.5" />
+    <line x1="208" y1="422" x2="304" y2="422" stroke="#ffd97d" stroke-width="1.5" />
+  </g>
+</svg>

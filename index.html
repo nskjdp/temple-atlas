@@ -19,8 +19,15 @@
 
   <!-- Upgraded Modern Stylesheet -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Progressive Web App & Icons -->
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icons/icon-192.svg" sizes="192x192" type="image/svg+xml">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" type="image/svg+xml" href="icons/icon-192.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Temple Atlas">
 </head>
 <body>
   <!-- Modern App Header -->
@@ -29,11 +36,33 @@
       <!-- Brand & Title -->
       <div class="brand">
         <div class="brand-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L15 8H9L12 2Z" fill="currentColor" fill-opacity="0.3"></path>
-            <path d="M7 8H17L19 14H5L7 8Z"></path>
-            <path d="M4 14H20V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V14Z"></path>
-            <circle cx="12" cy="18" r="2"></circle>
+          <svg viewBox="0 0 32 32" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Kalasha Finial -->
+            <path d="M16 2.5L17.5 5.5L16 6.5L14.5 5.5Z" fill="#FFF5CC" />
+            <circle cx="16" cy="7.5" r="1.5" fill="#E5BE53" />
+            <!-- Amalaka Ribbed Stone -->
+            <ellipse cx="16" cy="10" rx="4.5" ry="1.2" fill="#E5BE53" stroke="#FFF5CC" stroke-width="0.6" />
+            <!-- Shikhara Top Tier -->
+            <path d="M13.5 11H18.5L19.5 14.5H12.5L13.5 11Z" fill="#E5BE53" />
+            <line x1="16" y1="11" x2="16" y2="14.5" stroke="#785510" stroke-width="0.8" />
+            <!-- Shikhara Middle Tier -->
+            <path d="M12 15H20L21.2 19H10.8L12 15Z" fill="#E5BE53" />
+            <path d="M14 15V19M18 15V19" stroke="#785510" stroke-width="0.6" />
+            <circle cx="16" cy="17" r="1" fill="#450A14" />
+            <!-- Mandapa Roof & Eaves -->
+            <path d="M9 19.5L23 19.5L24.5 21H7.5L9 19.5Z" fill="#FFF5CC" />
+            <rect x="8.5" y="21" width="15" height="1" fill="#785510" />
+            <!-- Sanctum Pillars & Garbhagriha Arch -->
+            <rect x="9.5" y="22" width="13" height="7" fill="#E5BE53" />
+            <line x1="11" y1="22" x2="11" y2="29" stroke="#785510" stroke-width="0.8" />
+            <line x1="21" y1="22" x2="21" y2="29" stroke="#785510" stroke-width="0.8" />
+            <!-- Inner Sanctum Portal -->
+            <path d="M13.5 29V24.5Q16 23 18.5 24.5V29Z" fill="#200408" />
+            <!-- Sacred Diya Flame Glow -->
+            <circle cx="16" cy="27" r="1.8" fill="#FF7B1A" />
+            <circle cx="16" cy="26.6" r="0.8" fill="#FFF5CC" />
+            <!-- Plinth Foundation Base -->
+            <path d="M7 29H25L26 30.5H6L7 29Z" fill="#E5BE53" />
           </svg>
         </div>
         <div class="brand-text">
@@ -149,63 +178,68 @@
     <!-- Backdrop Overlay for mobile sheets and drawers -->
     <div id="panel-backdrop" class="panel-backdrop" aria-hidden="true"></div>
 
-    <!-- Details Panel (Slide from Right on Desktop, Slide from Bottom on Mobile) -->
+    <!-- Details Panel (Slide from Right on Desktop, Bottom Sheet on Mobile) -->
     <aside id="details-panel" class="details-panel" aria-labelledby="detail-temple-name" aria-hidden="true">
       <!-- Mobile Drag / Grip Handle -->
       <div class="sheet-handle" aria-hidden="true" title="Drag to resize or dismiss"></div>
 
-      <!-- Modern Sticky Details Header with Nav Buttons -->
-      <div class="details-header">
-        <div class="details-header-left">
-          <div class="details-meta-pill" id="detail-region-tag">Region</div>
-          <span class="details-index-pill" id="details-index-pill">Temple 1 of 20</span>
+      <!-- Modern Fixed/Sticky Details Header (Houses Navigation, Temple Title & Location so it's NEVER hidden by scroll!) -->
+      <header class="details-header-wrap">
+        <div class="details-header-top">
+          <div class="details-header-left">
+            <div class="details-meta-pill" id="detail-region-tag">Region</div>
+            <span class="details-index-pill" id="details-index-pill">Temple 1 of 20</span>
+          </div>
+
+          <!-- Virtual Tour Previous / Next Controls -->
+          <div class="details-nav-controls">
+            <button type="button" id="btn-prev-temple" class="btn-nav-icon" title="Previous temple (ArrowLeft)" aria-label="Previous temple">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button type="button" id="btn-next-temple" class="btn-nav-icon" title="Next temple (ArrowRight)" aria-label="Next temple">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+            <button type="button" id="btn-close-details" class="btn-close" aria-label="Close temple details (Escape)">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <!-- Virtual Tour Previous / Next Controls -->
-        <div class="details-nav-controls">
-          <button type="button" id="btn-prev-temple" class="btn-nav-icon" title="Previous temple (ArrowLeft)" aria-label="Previous temple">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-          <button type="button" id="btn-next-temple" class="btn-nav-icon" title="Next temple (ArrowRight)" aria-label="Next temple">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-          <button type="button" id="btn-close-details" class="btn-close" aria-label="Close temple details (Escape)">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Details Content (Scrollable Container) -->
-      <div class="details-scroll" id="details-scroll">
-        <!-- Temple Title & Location -->
+        <!-- Prominently Pinned Temple Heading Group -->
         <div class="temple-heading-group">
           <h2 id="detail-temple-name" class="detail-title">Temple Name</h2>
           <div class="detail-location-badge">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
             <span id="detail-city-country">City, Country</span>
           </div>
         </div>
+      </header>
 
-        <!-- Temple Image & Attribution -->
+      <!-- Details Content (Scrollable Container) -->
+      <div class="details-scroll" id="details-scroll">
+        <!-- Temple Photograph & Attribution (Hero Display) -->
         <figure class="detail-image-card">
           <div class="image-wrapper">
             <div class="image-skeleton" aria-hidden="true"></div>
             <img id="detail-image" src="" alt="Photograph of temple" loading="eager" referrerpolicy="no-referrer">
             <div id="image-fallback" class="image-fallback" style="display:none;" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M12 2L15 8H9L12 2Z"></path>
-                <path d="M7 8H17L19 14H5L7 8Z"></path>
-                <path d="M4 14H20V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V14Z"></path>
+              <svg viewBox="0 0 48 48" width="52" height="52" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="8" width="36" height="32" rx="4" ry="4" stroke="var(--color-maroon-rich)" stroke-width="2.2" fill="rgba(179, 62, 6, 0.04)"></rect>
+                <circle cx="16" cy="17" r="3" fill="var(--color-gold)" stroke="none"></circle>
+                <!-- Stylized Temple Silhouette within Photo Frame -->
+                <path d="M24 18l3 5h-6l3-5z" fill="var(--color-saffron)" stroke="none"></path>
+                <path d="M22 23h4v4h-4z" fill="var(--color-saffron)" stroke="none"></path>
+                <path d="M12 34l8-8 5 5 7-7 6 6" stroke="var(--color-maroon-rich)" stroke-width="2.2"></path>
               </svg>
               <p>Temple Photograph</p>
             </div>
@@ -223,42 +257,13 @@
           <figcaption id="detail-image-credit" class="image-credit">Image credit</figcaption>
         </figure>
 
-        <!-- Quick Facts At A Glance -->
-        <div class="quick-facts-grid" aria-label="Key facts at a glance">
-          <div class="fact-card">
-            <div class="fact-icon">📍</div>
-            <div class="fact-info">
-              <span class="fact-label">Coordinates</span>
-              <span class="fact-value" id="fact-coordinates">--</span>
-            </div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-icon">🌍</div>
-            <div class="fact-info">
-              <span class="fact-label">Region</span>
-              <span class="fact-value" id="fact-region">--</span>
-            </div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-icon">🛕</div>
-            <div class="fact-info">
-              <span class="fact-label">Heritage</span>
-              <span class="fact-value" id="fact-status">World Sacred Site</span>
-            </div>
-          </div>
-          <div class="fact-card">
-            <div class="fact-icon">✨</div>
-            <div class="fact-info">
-              <span class="fact-label">Key Highlight</span>
-              <span class="fact-value" id="fact-highlight">Prominent Monument</span>
-            </div>
-          </div>
-        </div>
-
         <!-- Summary -->
         <section class="detail-section highlight-box">
           <h3 class="section-heading">
-            <span class="heading-emoji">📜</span>
+            <svg class="heading-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
             <span>Overview</span>
           </h3>
           <p id="detail-summary" class="section-body"></p>

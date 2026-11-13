@@ -55,10 +55,6 @@
   const imageFallback = document.getElementById('image-fallback');
   const detailImageCredit = document.getElementById('detail-image-credit');
   const imageOverlayBadge = document.getElementById('image-overlay-badge');
-  const factCoordinates = document.getElementById('fact-coordinates');
-  const factRegion = document.getElementById('fact-region');
-  const factStatus = document.getElementById('fact-status');
-  const factHighlight = document.getElementById('fact-highlight');
   const detailSummary = document.getElementById('detail-summary');
   const detailHistory = document.getElementById('detail-history');
   const detailArchitecture = document.getElementById('detail-architecture');
@@ -92,7 +88,23 @@
     initMap();
     loadTempleData();
     setupEventListeners();
+    registerServiceWorker();
   });
+
+  /**
+   * Registers Progressive Web App (PWA) Service Worker for offline asset caching.
+   */
+  function registerServiceWorker() {
+    if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then((registration) => {
+          console.log('Temple Atlas Service Worker registered with scope:', registration.scope);
+        }).catch((error) => {
+          console.warn('Service Worker registration skipped or failed:', error);
+        });
+      });
+    }
+  }
 
   /**
    * Initializes the Leaflet map centered prominently on India.
@@ -162,7 +174,8 @@
 
   /**
    * Creates a custom SVG Leaflet DivIcon for a temple marker.
-   * Saffron and imperial maroon palette with a sacred shikhara dome icon.
+   * Features a majestic imperial maroon & radiant gold teardrop pin with
+   * an ornate tiered Hindu temple shikhara, kalasha, and glowing inner sanctum.
    * 
    * @param {string} templeId - Unique temple identifier
    * @returns {L.DivIcon} Leaflet DivIcon instance
@@ -170,17 +183,58 @@
   function createTempleIcon(templeId) {
     const iconHtml = `
       <div class="temple-pin" id="pin-${templeId}" role="button" aria-label="Temple marker">
-        <svg viewBox="0 0 38 46" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Outer Shadow Pin Outline -->
-          <path d="M19 1C9.611 1 2 8.611 2 18C2 29 19 45 19 45C19 45 36 29 36 18C36 8.611 28.389 1 19 1Z" 
-                fill="#380A12" stroke="#CBA338" stroke-width="2"/>
-          <!-- Inner Radiant Saffron Halo -->
-          <circle cx="19" cy="18" r="13" fill="#D95A15" stroke="#E5BE53" stroke-width="1.2"/>
-          <!-- Sacred Temple Shikhara / Kalasha Emblem -->
-          <path d="M19 7L23 13H15L19 7Z" fill="#FFF9F0"/>
-          <path d="M14 13H24L25.5 19H12.5L14 13Z" fill="#FFF9F0"/>
-          <path d="M12 19H26V24.5C26 25.3 25.3 26 24.5 26H13.5C12.7 26 12 25.3 12 24.5V19Z" fill="#FFF9F0"/>
-          <circle cx="19" cy="22.5" r="1.5" fill="#380A12"/>
+        <svg viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="pinBodyGrad-${templeId}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#4a0e19" />
+              <stop offset="50%" stop-color="#2d050c" />
+              <stop offset="100%" stop-color="#160205" />
+            </linearGradient>
+            <linearGradient id="pinGoldGrad-${templeId}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fae08c" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#a47d1e" />
+            </linearGradient>
+            <radialGradient id="pinHaloGrad-${templeId}" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ff7b1a" />
+              <stop offset="70%" stop-color="#c94206" />
+              <stop offset="100%" stop-color="#731f03" />
+            </radialGradient>
+          </defs>
+
+          <!-- Outer Teardrop Pin Silhouette -->
+          <path d="M20 1.5 C10 1.5 2 9.5 2 19.5 C2 31.5 18.2 47.8 19.3 48.9 C19.7 49.3 20.3 49.3 20.7 48.9 C21.8 47.8 38 31.5 38 19.5 C38 9.5 30 1.5 20 1.5 Z" 
+                fill="url(#pinBodyGrad-${templeId})" 
+                stroke="url(#pinGoldGrad-${templeId})" 
+                stroke-width="1.8" />
+
+          <!-- Inner Radiant Medallion -->
+          <circle cx="20" cy="19" r="14.5" fill="url(#pinHaloGrad-${templeId})" stroke="#ffd56b" stroke-width="1" />
+
+          <!-- Sacred Hindu Temple Motif Inside Marker -->
+          <!-- Kalasha & Pinnacle Spire -->
+          <path d="M20 7.5 L21 9.5 L20 10.2 L19 9.5 Z" fill="#ffffff" />
+          <circle cx="20" cy="10.8" r="1" fill="#ffe082" />
+          <!-- Amalaka Cap Disc -->
+          <ellipse cx="20" cy="12.3" rx="3.4" ry="0.9" fill="#ffd56b" stroke="#6b4c09" stroke-width="0.4" />
+          <!-- Shikhara Upper Tier -->
+          <path d="M18.2 13 L21.8 13 L22.6 15.5 L17.4 15.5 Z" fill="#fff9f0" />
+          <!-- Shikhara Middle Tier -->
+          <path d="M16.8 16 L23.2 16 L24.2 19 L15.8 19 Z" fill="#fff9f0" />
+          <circle cx="20" cy="17.5" r="0.75" fill="#380a12" />
+          <!-- Mandapa Roof & Eaves -->
+          <path d="M14.2 19.5 L25.8 19.5 L26.8 21 L13.2 21 Z" fill="#ffd56b" />
+          <!-- Sanctum Pillars & Garbhagriha Arch -->
+          <rect x="14.8" y="21.5" width="10.4" height="6.2" fill="#fff9f0" />
+          <line x1="16" y1="21.5" x2="16" y2="27.7" stroke="#785510" stroke-width="0.6" />
+          <line x1="24" y1="21.5" x2="24" y2="27.7" stroke="#785510" stroke-width="0.6" />
+          <!-- Arched Portal -->
+          <path d="M18 27.7 V24 Q20 22.8 22 24 V27.7 Z" fill="#24040a" />
+          <!-- Sacred Diya Glow inside Sanctum -->
+          <circle cx="20" cy="26" r="1.1" fill="#ff9933" />
+          <circle cx="20" cy="25.8" r="0.5" fill="#ffffff" />
+          <!-- Adhisthana Plinth -->
+          <rect x="13.2" y="27.8" width="13.6" height="1.4" fill="#ffd56b" />
         </svg>
       </div>
     `;
@@ -188,9 +242,9 @@
     return L.divIcon({
       html: iconHtml,
       className: 'temple-marker-icon',
-      iconSize: [38, 46],
-      iconAnchor: [19, 46],     // Tip of pin sits precisely on the coordinate
-      popupAnchor: [0, -44]     // Popup opens smoothly above pin
+      iconSize: [40, 50],
+      iconAnchor: [20, 50],     // Tip of pin sits precisely on coordinate
+      popupAnchor: [0, -48]     // Popup opens cleanly above pin
     });
   }
 
@@ -386,21 +440,6 @@
     detailTempleName.textContent = temple.name;
     detailCityCountry.textContent = `${temple.city}, ${temple.country}`;
 
-    // Populate Quick Facts Grid
-    const latStr = temple.latitude >= 0 ? `${temple.latitude.toFixed(4)}° N` : `${Math.abs(temple.latitude).toFixed(4)}° S`;
-    const lngStr = temple.longitude >= 0 ? `${temple.longitude.toFixed(4)}° E` : `${Math.abs(temple.longitude).toFixed(4)}° W`;
-    factCoordinates.textContent = `${latStr}, ${lngStr}`;
-    factRegion.textContent = temple.region || temple.country;
-    factStatus.textContent = temple.country;
-    
-    // Extract a concise highlight for the quick fact card
-    let highlightSnippet = "Prominent Monument";
-    if (temple.summary.includes("largest")) highlightSnippet = "World-Record Scale";
-    else if (temple.summary.includes("UNESCO")) highlightSnippet = "UNESCO Heritage";
-    else if (temple.summary.includes("century")) highlightSnippet = "Ancient Heritage";
-    else if (temple.summary.includes("Jyotirlinga")) highlightSnippet = "Sacred Jyotirlinga";
-    factHighlight.textContent = highlightSnippet;
-
     // Narrative content
     detailSummary.textContent = temple.summary;
     detailHistory.textContent = temple.history;
@@ -421,19 +460,16 @@
       });
     }
 
-    // Handle Image Loading with Skeleton & Fallback
+    // Handle Image Loading with Skeleton, Full View link & Fallback
     const imageSkeleton = detailsPanel.querySelector('.image-skeleton');
     if (imageSkeleton) imageSkeleton.style.display = 'block';
     imageFallback.style.display = 'none';
     detailImage.style.display = 'block';
-    detailImage.style.opacity = '0';
-    detailImage.src = temple.imageUrl;
-    detailImage.alt = `Photograph of ${temple.name}`;
-    detailImageCredit.textContent = temple.imageCredit || 'Wikimedia Commons';
-    imageOverlayBadge.textContent = temple.city;
+    detailImage.style.opacity = '1';
 
     detailImage.onload = () => {
       if (imageSkeleton) imageSkeleton.style.display = 'none';
+      detailImage.style.display = 'block';
       detailImage.style.opacity = '1';
     };
 
@@ -443,6 +479,22 @@
       imageFallback.style.display = 'flex';
       imageFallback.querySelector('p').textContent = `${temple.name} (${temple.country})`;
     };
+
+    detailImage.alt = `Photograph of ${temple.name}`;
+    detailImage.src = temple.imageUrl;
+    detailImageCredit.textContent = temple.imageCredit || 'Wikimedia Commons';
+    imageOverlayBadge.textContent = temple.city;
+    if (linkFullImage) {
+      linkFullImage.href = temple.imageUrl;
+      linkFullImage.setAttribute('aria-label', `View full resolution image of ${temple.name}`);
+    }
+
+    // If image is already cached and loaded
+    if (detailImage.complete && detailImage.naturalWidth > 0) {
+      if (imageSkeleton) imageSkeleton.style.display = 'none';
+      detailImage.style.display = 'block';
+      detailImage.style.opacity = '1';
+    }
 
     // Highlight selected marker pin
     highlightMarker(templeId);
@@ -463,7 +515,8 @@
     // Smoothly pan map to center temple
     panToTempleSmoothly(temple);
 
-    // Scroll details panel back to top
+    // Ensure details panel and scrollable container are cleanly reset to top
+    detailsPanel.scrollTop = 0;
     const scrollContainer = document.getElementById('details-scroll');
     if (scrollContainer) {
       scrollContainer.scrollTop = 0;

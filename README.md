@@ -35,6 +35,12 @@ temple-atlas/
 ├── style.css         # Responsive styling, color theme, sliding drawers, and animations
 ├── script.js         # Map initialization, data fetching, hover delay logic, and event handlers
 ├── temples.json      # Complete database of 20 temples with accurate coordinates & details
+├── manifest.json     # PWA Web App Manifest (standalone app metadata & icons)
+├── sw.js             # Service Worker for offline shell and asset caching
+├── favicon.svg       # Master vector favicon with imperial maroon & gold sacred temple crest
+├── icons/            # High-resolution vector PWA and touch icons (192px & 512px)
+│   ├── icon-192.svg
+│   └── icon-512.svg
 └── README.md         # Documentation, teacher explanation guide, and hosting instructions
 ```
 
